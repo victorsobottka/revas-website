@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REVAS | Revenue Assurance for Modern Payments</title>
+    <meta name="description"
+        content="Recover hidden revenue lost in payment acceptance. Independent, read-only audit showing where transactions fail and what to fix first.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* Colors */
+            --color-navy: #0A2540;
+            --color-blurple: #635BFF;
+            --color-success: #0FA573;
+            --color-danger: #DF1B41;
+            --color-white: #FFFFFF;
+            --color-grey-light: #F8F9FC;
+            --color-slate: #425466;
+
+            /* Typography */
+            --font-display: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: "JetBrains Mono", "SF Mono", monospace;
+
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 4rem;
+            --space-xl: 6rem;
+
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 100px;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(10, 37, 64, 0.08);
+            --shadow-md: 0 8px 24px rgba(10, 37, 64, 0.12);
+            --shadow-lg: 0 16px 48px rgba(10, 37, 64, 0.16);
+        }
+
+        html {
+            font-family: var(--font-body);
+            font-size: 16px;
+            color: var(--color-navy);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--color-white);
+            min-height: 100vh;
+        }
+
+        /* Sticky CTA */
+        .sticky-cta {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .sticky-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .sticky-cta .btn {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(10, 37, 64, 0.06);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--color-navy);
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-slate);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-navy);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--color-blurple);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 91, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(10, 37, 64, 0.05);
+            color: var(--color-navy);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(10, 37, 64, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 91, 255, 0.1), transparent);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .hero-brand {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-blurple);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            color: var(--color-navy);
+        }
+
+        .hero .trigger {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+            color: var(--color-slate);
+        }
+
+        .hero .trigger .highlight {
+            color: var(--color-danger);
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--color-slate);
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            max-width: 50ch;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Transaction Flow Visual */
+        .flow-section {
+            padding: var(--space-xl) var(--space-md);
+            background: var(--color-grey-light);
+        }
+
+        .flow-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--color-navy);
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--color-slate);
+            max-width: 50ch;
+            margin: 0 auto;
+        }
+
+        .killer-question {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            text-align: center;
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .killer-question p {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--color-navy);
+            font-style: italic;
+        }
+
+        /* Waterfall Chart */
+        .waterfall {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            box-shadow: var(--shadow-md);
+        }
+
+        .waterfall-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid rgba(10, 37, 64, 0.06);
+        }
+
+        .waterfall-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .waterfall-header .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-success);
+            background: rgba(15, 165, 115, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-pill);
+        }
+
+        .waterfall-header .live-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--color-success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .waterfall-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: var(--space-md);
+            height: 300px;
+            position: relative;
+        }
+
+        .waterfall-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .bar-visual {
+            width: 100%;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .bar-visual.attempts {
+            height: 100%;
+            background: rgba(10, 37, 64, 0.1);
+        }
+
+        .bar-visual.lost {
+            height: 10%;
+            background: linear-gradient(180deg, var(--color-danger), #FF6B6B);
+            box-shadow: 0 0 20px rgba(223, 27, 65, 0.3);
+        }
+
+        .bar-visual.settled {
+            height: 90%;
+            background: linear-gradient(180deg, var(--color-blurple), #8B85FF);
+            box-shadow: 0 0 20px rgba(99, 91, 255, 0.3);
+        }
+
+        .bar-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-slate);
+        }
+
+        .bar-value {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: absolute;
+            top: -2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .bar-value.danger {
+            color: var(--color-danger);
+        }
+
+        .bar-value.success {
+            color: var(--color-blurple);
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: var(--space-xl) var(--space-md);
+        }
+
+        .how-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .step-card {
+            background: var(--color-grey-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            transition: all 0.2s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-blurple);
+            color: var(--color-white);
+            border-radius: 50%;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+        }
+
+        .step-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-navy);
+        }
+
+        .step-card p {
+            color: var(--color-slate);
+            line-height: 1.6;
+        }
+
+        /* Code Snippet */
+        .code-section {
+            padding: var(--space-lg) var(--space-md);
+            background: var(--color-navy);
+        }
+
+        .code-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .code-header {
+            color: var(--color-white);
+            text-align: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .code-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-header p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            color: #A3ACBE;
+        }
+
+        .code-block .keyword {
+            color: var(--color-blurple);
+        }
+
+        .code-block .string {
+            color: #00D4FF;
+        }
+
+        .code-block .comment {
+            color: #6B7280;
+        }
+
+        .code-block .function {
+            color: #FF80B5;
+        }
+
+        /* Deliverables Section */
+        .deliverables {
+            padding: var(--space-xl) var(--space-md);
+        }
+
+        .deliverables-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .deliverables-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        @media (max-width: 900px) {
+            .deliverables-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .deliverable-card {
+            background: var(--color-grey-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            border: 1px solid rgba(10, 37, 64, 0.06);
+        }
+
+        .deliverable-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .deliverable-card .icon {
+            color: var(--color-blurple);
+        }
+
+        .deliverable-card p {
+            color: var(--color-slate);
+            margin-bottom: var(--space-sm);
+        }
+
+        /* ROI Table */
+        .roi-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .roi-table th,
+        .roi-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(10, 37, 64, 0.06);
+        }
+
+        .roi-table th {
+            font-weight: 600;
+            color: var(--color-navy);
+            background: rgba(10, 37, 64, 0.03);
+        }
+
+        .roi-table .priority {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .roi-table .priority.p1 {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .roi-table .priority.p2 {
+            background: #FFA500;
+            color: white;
+        }
+
+        .roi-table .priority.p3 {
+            background: var(--color-blurple);
+            color: white;
+        }
+
+        .roi-table .amount {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--color-danger);
+        }
+
+        /* Heatmap Preview */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-top: var(--space-sm);
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .heatmap-cell.high {
+            background: var(--color-success);
+        }
+
+        .heatmap-cell.medium {
+            background: #FFA500;
+        }
+
+        .heatmap-cell.low {
+            background: var(--color-danger);
+        }
+
+        /* --- REDESIGN: System Pipeline (Waterfall Replacement) --- */
+        .pipeline-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-sm);
+            padding: var(--space-md) 0;
+            position: relative;
+        }
+
+        .pipeline-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pipeline-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-white);
+            border: 2px solid var(--color-blurple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-blurple);
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pipeline-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .pipeline-sub {
+            font-size: 0.75rem;
+            color: var(--color-slate);
+        }
+
+        .pipeline-connector {
+            flex: 0.5;
+            height: 2px;
+            background: var(--color-blurple);
+            position: relative;
+            opacity: 0.3;
+        }
+
+        .pipeline-connector::after {
+            content: '►';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: var(--color-blurple);
+        }
+
+        /* --- REDESIGN: Market Comparison (Heatmap Replacement) --- */
+        .comparison-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 50px;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .bank-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-navy);
+        }
+
+        .bank-logo {
+            width: 24px;
+            height: 24px;
+            background: var(--color-grey-light);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .comparison-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bar-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bar-track {
+            flex-grow: 1;
+            height: 6px;
+            background: var(--color-grey-light);
+            border-radius: var(--radius-pill);
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: var(--radius-pill);
+        }
+
+        .bar-fill.my-rate {
+            background: var(--color-danger);
+        }
+
+        .bar-fill.market-rate {
+            background: var(--color-success);
+            opacity: 0.5;
+        }
+
+        .rate-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            width: 3ch;
+        }
+
+        /* --- REDESIGN: Window UI (Action Plan Replacement) --- */
+        .window-ui {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid rgba(10, 37, 64, 0.1);
+        }
+
+        .window-header {
+            background: var(--color-grey-light);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(10, 37, 64, 0.06);
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .window-dot.red {
+            background: #FF5F57;
+        }
+
+        .window-dot.yellow {
+            background: #FEBC2E;
+        }
+
+        .window-dot.green {
+            background: #28C840;
+        }
+
+        .window-title {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--color-slate);
+            opacity: 0.8;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 40px;
+            /* Balance controls */
+        }
+
+        /* Update Table Styles for Window UI */
+        .window-ui .roi-table th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-slate);
+            padding: 1rem;
+        }
+
+        .window-ui .roi-table td {
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--color-navy);
+        }
+
+        .priority-p1 {
+            background: rgba(223, 27, 65, 0.1);
+            color: var(--color-danger);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .priority-p2 {
+            background: rgba(255, 165, 0, 0.1);
+            color: #E69500;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .priority-p3 {
+            background: rgba(99, 91, 255, 0.1);
+            color: var(--color-blurple);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .action-code {
+            font-family: var(--font-mono);
+            color: var(--color-blurple);
+            font-size: 0.8rem;
+        }
+
+        /* --- REDESIGN: Transaction Waterfall -> Leakage Breakdown --- */
+        .leakage-viz {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+            position: relative;
+        }
+
+        .leak-block {
+            background: var(--color-white);
+            border: 1px solid var(--color-grey-light);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+            z-index: 2;
+        }
+
+        .leak-block.total {
+            border-top: 4px solid var(--color-navy);
+        }
+
+        .leak-block.settled {
+            border-bottom: 4px solid var(--color-success);
+            background: #F0FDF4;
+            /* Light green tint */
+        }
+
+        .leak-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--space-sm);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .leak-item {
+            background: var(--color-grey-light);
+            padding: var(--space-sm);
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--color-slate);
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .leak-item strong {
+            display: block;
+            color: var(--color-navy);
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        /* The "Product Focus" Highlight */
+        .leak-item.focus-leak {
+            background: #FFF5F5;
+            border: 1px solid #FECACA;
+            box-shadow: 0 0 15px rgba(223, 27, 65, 0.15);
+            transform: scale(1.05);
+            z-index: 3;
+        }
+
+        .leak-item.focus-leak strong {
+            color: var(--color-danger);
+        }
+
+        .leak-item.focus-leak::after {
+            content: 'RECOVERABLE';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-danger);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        /* Connecting Lines */
+        .flow-line-vertical {
+            width: 2px;
+            height: 20px;
+            background: var(--color-grey-light);
+            margin: -10px 0;
+            /* Overlap slightly */
+            z-index: 1;
+        }
+
+        /* Social Proof Section */
+        .social-proof {
+            padding: var(--space-lg) var(--space-md);
+            background: linear-gradient(180deg, var(--color-grey-light), var(--color-white));
+        }
+
+        .social-proof-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .testimonial-card {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--color-blurple);
+        }
+
+        .testimonial-quote {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--color-navy);
+            line-height: 1.6;
+            margin-bottom: var(--space-sm);
+            font-style: italic;
+        }
+
+        .testimonial-cite {
+            color: var(--color-slate);
+            font-size: 0.95rem;
+            font-style: normal;
+        }
+
+        /* Trust Badges */
+        .trust-badges {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-slate);
+            background: var(--color-grey-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-pill);
+        }
+
+        /* Mid-Page CTA */
+        .mid-cta {
+            padding: var(--space-lg) var(--space-md);
+            text-align: center;
+            background: var(--color-grey-light);
+        }
+
+        /* Final CTA Section */
+        .final-cta {
+            padding: var(--space-xl) var(--space-md);
+        }
+
+        .final-cta-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .final-cta-card {
+            background: var(--color-navy);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            color: var(--color-white);
+            text-align: center;
+        }
+
+        .final-cta-card h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+        }
+
+        .guarantee {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: var(--space-md);
+        }
+
+        .final-cta-card .btn {
+            background: var(--color-white);
+            color: var(--color-navy);
+        }
+
+        .final-cta-card .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(10, 37, 64, 0.06);
+            padding: var(--space-md);
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        .footer-logo {
+            font-weight: 700;
+            color: var(--color-navy);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-md);
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--color-slate);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-navy);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .waterfall-bars {
+                height: 200px;
+            }
+
+            .bar-value {
+                font-size: 1rem;
+            }
+
+            .deliverables-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .heatmap-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .sticky-cta {
+                right: 1rem;
+                bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sticky CTA (appears on scroll) -->
+    <div class="sticky-cta" id="stickyCta">
+        <a href="#request-audit" class="btn btn-primary">Request My Leakage Audit</a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="nav-logo">REVAS</div>
+            <ul class="nav-links">
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#deliverables">Deliverables</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+            </ul>
+            <a href="#request-audit" class="btn btn-primary">Request My Leakage Audit</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <p class="hero-brand">Revenue Assurance</p>
+            <h1>The Revenue Assurance Layer for Modern Payments</h1>
+            <p class="trigger">
+                Your Payments Are Leaking <span class="highlight">0.5% of Top-Line Revenue</span>.<br>
+                We Know Exactly Where.
+            </p>
+            <p>Independent, read-only audit of your payment acceptance rates. No integration. No routing changes. Just
+                the lost revenue found and a prioritized plan to recover it.</p>
+            <a href="#request-audit" class="btn btn-primary" id="heroCta">
+                <span class="material-symbols-outlined">search</span>
+                Request My Leakage Audit
+            </a>
+        </div>
+    </section>
+
+    <!-- Transaction Flow Section -->
+    <section class="flow-section" id="problem">
+        <div class="flow-container">
+            <div class="killer-question">
+                <p>"Do you know exactly how much revenue you lost last month due to generic declines? Can you rank your
+                    top 3 technical failures by lost € value across all your PSPs?"</p>
+            </div>
+
+            <div class="waterfall">
+                <div class="waterfall-header">
+                    <h3>Revenue Leakage Breakdown</h3>
+                    <span class="live-badge">Audit View</span>
+                </div>
+
+                <div class="leakage-viz">
+                    <!-- Top: Total Volume -->
+                    <div class="leak-block total">
+                        <strong>Total Transaction Attempts</strong>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-navy);">€100.0M</div>
+                        <small style="color: var(--color-slate);">Raw Volume</small>
+                    </div>
+
+                    <div class="flow-line-vertical"></div>
+
+                    <!-- Middle: The Leaks -->
+                    <div class="leak-grid">
+                        <div class="leak-item">
+                            <strong>Fraud Blocks</strong>
+                            <span style="color: var(--color-slate); font-family: var(--font-mono);">-€2.4M</span>
+                            <div style="font-size: 0.7rem; margin-top: 4px;">Risk Rules</div>
+                        </div>
+
+                        <!-- The Focus -->
+                        <div class="leak-item focus-leak">
+                            <strong>Technical Fails</strong>
+                            <span
+                                style="color: var(--color-danger); font-weight: 700; font-family: var(--font-mono);">-€600K</span>
+                            <div style="font-size: 0.7rem; margin-top: 4px; color: #DC2626;">Hidden Leakage</div>
+                        </div>
+
+                        <div class="leak-item">
+                            <strong>Issuer Declines</strong>
+                            <span style="color: var(--color-slate); font-family: var(--font-mono);">-€6.1M</span>
+                            <div style="font-size: 0.7rem; margin-top: 4px;">Insuff. Funds</div>
+                        </div>
+                    </div>
+
+                    <div class="flow-line-vertical"></div>
+
+                    <!-- Bottom: Settled -->
+                    <div class="leak-block settled">
+                        <strong>Settled Revenue</strong>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-success);">€90.9M</div>
+                        <small style="color: var(--color-slate);">Net Deposited</small>
+                    </div>
+                </div>
+
+                <p
+                    style="text-align: center; font-size: 0.85rem; color: var(--color-slate); margin-top: var(--space-md);">
+                    REVAS recovers the <strong>Technical Fails</strong>. We don't touch fraud or insufficient funds.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="methodology">
+        <div class="how-container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Three steps to uncover hidden revenue. No system changes required.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Connect</h3>
+                    <p>We plug into your PSPs (Adyen, Stripe, Checkout.com) via read-only API keys. No code changes or
+                        regulatory compliance needed.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Normalize</h3>
+                    <p>Our engine maps every disparate error code (e.g., "51", "do_not_honor") to a universal financial
+                        schema.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Quantify</h3>
+                    <p>We deliver a Ranked Action Plan showing exactly which fixes yield the highest ROI—in € terms.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="social-proof" id="testimonials">
+        <div class="social-proof-container">
+            <div class="testimonial-card">
+                <p class="testimonial-quote">"REVAS identified €180K in monthly leakage we didn't know existed. The ROI
+                    was immediate."</p>
+                <cite class="testimonial-cite">— Head of Payments, Fortune 500 E-Commerce</cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Snippet Section -->
+    <section class="code-section">
+        <div class="code-container">
+            <div class="code-header">
+                <h3>Simple Integration</h3>
+                <p>Read-only access to your existing PSPs</p>
+            </div>
+            <div class="code-block">
+                <span class="comment"># Connect to your PSPs (read-only)</span>
+                <span class="keyword">from</span> revas <span class="keyword">import</span> RevenueAudit
+
+                audit = RevenueAudit(
+                psp_connections=[
+                {<span class="string">"provider"</span>: <span class="string">"stripe"</span>, <span
+                    class="string">"api_key"</span>: <span class="string">"sk_live_..."</span>},
+                {<span class="string">"provider"</span>: <span class="string">"adyen"</span>, <span
+                    class="string">"api_key"</span>: <span class="string">"AQE..."</span>},
+                ],
+                mode=<span class="string">"read_only"</span> <span class="comment"># No changes to your systems</span>
+                )
+
+                <span class="comment"># Get prioritized recovery actions</span>
+                report = audit.<span class="function">generate_leakage_report</span>()
+                <span class="keyword">print</span>(report.top_actions)
+                <span class="comment"># [{"issue": "3DS failures on BR cards", "revenue_at_risk": 150000}]</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mid-Page CTA -->
+    <section class="mid-cta">
+        <a href="#request-audit" class="btn btn-primary">
+            <span class="material-symbols-outlined">search</span>
+            Request My Leakage Audit
+        </a>
+    </section>
+
+    <!-- Deliverables Section -->
+    <section class="deliverables" id="deliverables">
+        <div class="deliverables-container">
+            <div class="section-header">
+                <h2>What You Get</h2>
+                <p>A clear, quantified map of where payment acceptance is leaking revenue—and what to fix first.</p>
+            </div>
+            <div class="deliverables-grid">
+                <!-- System Pipeline (Waterfall Replacement) -->
+                <div class="deliverable-card">
+                    <h3>
+                        <span class="material-symbols-outlined icon">account_tree</span>
+                        Revenue Recovery Pipeline
+                    </h3>
+                    <p>How we identify and recover lost revenue without touching your code.</p>
+
+                    <div class="pipeline-container">
+                        <!-- Step 1 -->
+                        <div class="pipeline-step">
+                            <div class="pipeline-icon">
+                                <span class="material-symbols-outlined">api</span>
+                            </div>
+                            <div class="pipeline-label">Ingest</div>
+                            <div class="pipeline-sub">Read-only API</div>
+                        </div>
+
+                        <div class="pipeline-connector"></div>
+
+                        <!-- Step 2 -->
+                        <div class="pipeline-step">
+                            <div class="pipeline-icon">
+                                <span class="material-symbols-outlined">analytics</span>
+                            </div>
+                            <div class="pipeline-label">Analyze</div>
+                            <div class="pipeline-sub">140+ Error Codes</div>
+                        </div>
+
+                        <div class="pipeline-connector"></div>
+
+                        <!-- Step 3 -->
+                        <div class="pipeline-step">
+                            <div class="pipeline-icon">
+                                <span class="material-symbols-outlined">monetization_on</span>
+                            </div>
+                            <div class="pipeline-label">Recover</div>
+                            <div class="pipeline-sub">Actionable ROI</div>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-slate); text-align: center;">
+                        <strong>Insight:</strong> "We found €400k in 'Technical Fails' hidden in generic error codes."
+                    </p>
+                </div>
+
+                <!-- Market Comparison (Heatmap Replacement) -->
+                <div class="deliverable-card">
+                    <h3>
+                        <span class="material-symbols-outlined icon">ssid_chart</span>
+                        Market Comparison
+                    </h3>
+                    <p>Your acceptance rates vs. the market average.</p>
+
+                    <div class="comparison-list">
+                        <!-- Row 1 -->
+                        <div class="comparison-row">
+                            <div class="bank-info">
+                                <div class="bank-logo">CH</div>
+                                Chase US
+                            </div>
+                            <div class="comparison-bars">
+                                <div class="bar-group">
+                                    <div class="bar-track">
+                                        <div class="bar-fill my-rate" style="width: 82%"></div>
+                                    </div>
+                                    <span class="rate-label" style="color: var(--color-danger)">82%</span>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bar-track">
+                                        <div class="bar-fill market-rate" style="width: 94%"></div>
+                                    </div>
+                                    <span class="rate-label" style="color: var(--color-success)">94%</span>
+                                </div>
+                            </div>
+                            <div class="delta"
+                                style="color: var(--color-danger); font-size: 0.75rem; font-weight: 700; text-align: right;">
+                                -12%</div>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="comparison-row">
+                            <div class="bank-info">
+                                <div class="bank-logo">BA</div>
+                                Barclays
+                            </div>
+                            <div class="comparison-bars">
+                                <div class="bar-group">
+                                    <div class="bar-track">
+                                        <div class="bar-fill my-rate" style="width: 88%"></div>
+                                    </div>
+                                    <span class="rate-label" style="color: #FFA500">88%</span>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bar-track">
+                                        <div class="bar-fill market-rate" style="width: 95%"></div>
+                                    </div>
+                                    <span class="rate-label" style="color: var(--color-success)">95%</span>
+                                </div>
+                            </div>
+                            <div class="delta"
+                                style="color: #FFA500; font-size: 0.75rem; font-weight: 700; text-align: right;">-7%
+                            </div>
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="comparison-row">
+                            <div class="bank-info">
+                                <div class="bank-logo">NU</div>
+                                NuBank
+                            </div>
+                            <div class="comparison-bars">
+                                <div class="bar-group">
+                                    <div class="bar-track">
+                                        <div class="bar-fill my-rate" style="width: 79%"></div>
+                                    </div>
+                                    <span class="rate-label" style="color: var(--color-danger)">79%</span>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bar-track">
+                                        <div class="bar-fill market-rate" style="width: 92%"></div>
+                                    </div>
+                                    <span class="rate-label" style="color: var(--color-success)">92%</span>
+                                </div>
+                            </div>
+                            <div class="delta"
+                                style="color: var(--color-danger); font-size: 0.75rem; font-weight: 700; text-align: right;">
+                                -13%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROI Calculator (Window UI Replacement) -->
+                <div class="deliverable-card"
+                    style="grid-column: 1 / -1; padding: 0; overflow: hidden; background: transparent; box-shadow: none; border: none;">
+
+                    <div class="window-ui">
+                        <div class="window-header">
+                            <div class="window-controls">
+                                <div class="window-dot red"></div>
+                                <div class="window-dot yellow"></div>
+                                <div class="window-dot green"></div>
+                            </div>
+                            <div class="window-title">revas_action_plan.pdf</div>
+                        </div>
+
+                        <div style="padding: var(--space-md);">
+                            <h3 style="margin-top: 0;">
+                                <span class="material-symbols-outlined icon">analytics</span>
+                                Ranked Action Plan
+                            </h3>
+                            <p style="margin-bottom: 1rem;">Prioritized fixes ranked by financial return.</p>
+
+                            <table class="roi-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Issue</th>
+                                        <th scope="col">Revenue at Risk</th>
+                                        <th scope="col">Complexity</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="priority-p1">P1</span></td>
+                                        <td>Brazil 3DS failures</td>
+                                        <td class="amount">€150,000/mo</td>
+                                        <td>Low</td>
+                                        <td class="action-code">Disable 3DS &lt;€20</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="priority-p2">P2</span></td>
+                                        <td>Amex France declines</td>
+                                        <td class="amount">€45,000/mo</td>
+                                        <td>Medium</td>
+                                        <td class="action-code">Check MCC Code</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="priority-p3">P3</span></td>
+                                        <td>Generic "Do Not Honor"</td>
+                                        <td class="amount">€12,000/mo</td>
+                                        <td>High</td>
+                                        <td class="action-code">Retry on backup PSP</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta" id="request-audit">
+        <div class="final-cta-container">
+            <div class="final-cta-card">
+                <h2>If we find nothing, you pay nothing.</h2>
+                <p class="guarantee">Risk-free audit. Real results.</p>
+                <a href="mailto:audit@revas.io?subject=Leakage%20Audit%20Request" class="btn">
+                    <span class="material-symbols-outlined">mail</span>
+                    Request My Leakage Audit
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">REVAS</div>
+            <div class="trust-badges">
+                <span class="trust-badge">🔒 SOC 2 Compliant</span>
+                <span class="trust-badge">🇪🇺 GDPR Ready</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#deliverables">Deliverables</a></li>
+                <li><a href="mailto:audit@revas.io">Contact</a></li>
+                <li><a href="/privacy">Privacy Policy</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Sticky CTA Script -->
+    <script>
+        const stickyCta = document.getElementById('stickyCta');
+        const heroCta = document.getElementById('heroCta');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    stickyCta.classList.remove('visible');
+                } else {
+                    stickyCta.classList.add('visible');
+                }
+            });
+        }, { threshold: 0 });
+
+        observer.observe(heroCta);
+    </script>
+</body>
+
+</html>
